@@ -12,12 +12,13 @@ class SearchViewController: UIViewController {
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         setupView()
     }
     
     //MARK: - Helpers
     private func setupView(){
         view.backgroundColor = .systemBackground
+    
     }
 }
