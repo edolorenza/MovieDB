@@ -1,7 +1,7 @@
 # MovieDB
 
 ## Objective
-- [ ] Has tabbed navigation
+- [x] Has tabbed navigation
 - [ ] Showing a banner of recent movies on cinema   
 - [ ] Showing List of Popular Movies
 - [ ] Showing List of Coming Soon Movies
