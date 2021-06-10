@@ -43,6 +43,29 @@ final class APICaller {
             task.resume()
         }
     }
+    //MARK: - Get list of Genres
+    public func getListOfGenres(completion: @escaping(Result<[Genre], Error>) -> Void){
+        createRequest(with: URL(string: "https://api.themoviedb.org/3/genre/movie/list?api_key="+Constants.apiKey+"&language=en-US"), type: .GET) {
+            baseRequest in
+            print(baseRequest)
+            let task = URLSession.shared.dataTask(with: baseRequest) { data, _, error in
+                guard let data = data, error == nil else{
+                    completion(.failure(APIError.failedToGetData))
+                    return
+                }
+    
+                do{
+                    let result = try JSONDecoder().decode(GenreResponse.self, from: data)
+                    completion(.success(result.genres))
+                }
+                catch{
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
     
     //MARK: - Private
     enum HTTPMethod: String{

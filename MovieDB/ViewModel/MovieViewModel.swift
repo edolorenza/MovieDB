@@ -10,3 +10,6 @@ import Foundation
 struct MovieViewModel {
     let coverImage: URL?
 }
+
+
+

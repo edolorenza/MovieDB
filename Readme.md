@@ -5,9 +5,10 @@
 - [x] Showing a banner of recent movies on cinema   
 - [x] Showing List of Popular Movies
 - [x] Showing List of Top Rated Movies
-- [ ] Showing List of Coming Soon Movies
+- [x] Showing List of Coming Soon Movies
 - [ ] Fetch movies genres
 - [ ] Implement search bar to perform search based on title
+- [ ] Showing detail of movie
 - [ ] Save the movie result as favorit movie using local data persistence
 - [ ] Show favorite movie list
 - [ ] Delete favorite movie
