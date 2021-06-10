@@ -10,14 +10,14 @@ import UIKit
 class SearchViewController: UIViewController {
     
     //MARK: - Properties
-//    let searchController: UISearchController = {
-//        let result = SearchResultViewController()
-//        let vc = UISearchController(searchResultsController: result)
-//        vc.searchBar.placeholder = "Movie Titles"
-//        vc.searchBar.searchBarStyle = .minimal
-//        vc.definesPresentationContext = true
-//        return vc
-//    }()
+    let searchController: UISearchController = {
+        let result = SearchResultViewController()
+        let vc = UISearchController(searchResultsController: result)
+        vc.searchBar.placeholder = "Movie title"
+        vc.searchBar.searchBarStyle = .minimal
+        vc.definesPresentationContext = true
+        return vc
+    }()
     
     private var upcomingMovie = [Movie]()
     
@@ -47,7 +47,7 @@ class SearchViewController: UIViewController {
                 bottom: 4,
                 trailing: 0
             )
-
+            
             return NSCollectionLayoutSection(group: group)
         })
     )
@@ -57,7 +57,7 @@ class SearchViewController: UIViewController {
         super.viewDidLoad()
        
         setupCollectionView()
-//        setupSearchController()
+        setupSearchController()
         fetchData()
     }
     
@@ -90,61 +90,57 @@ class SearchViewController: UIViewController {
         view.addSubview(collectionView)
         collectionView.register(UpcomingMovieCollectionViewCell.self,
                                 forCellWithReuseIdentifier: UpcomingMovieCollectionViewCell.identifier)
-//        collectionView.delegate = self
+        collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = .systemBackground
     }
     
-//    private func setupSearchController(){
-//        navigationItem.searchController = searchController
-//
-//        searchController.searchBar.delegate = self
-//        navigationItem.searchController = searchController
-//    }
+    private func setupSearchController(){
+        navigationItem.searchController = searchController
+        searchController.searchBar.delegate = self
+        navigationItem.searchController = searchController
+    }
 
     
 }
 
 //MARK: - UISearchBarDelegate
-//extension SearchViewController: UISearchBarDelegate {
-//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-//        guard let resultController = searchController.searchResultsController as? SearchResultViewController,
-//            let query = searchBar.text,
-//            !query.trimmingCharacters(in: .whitespaces).isEmpty else {
-//            return
-//        }
-//        resultController.delegate = self
-//        APICaller.shared.search(query: query) { result in
-//            DispatchQueue.main.async {
-//                switch result {
-//                case .success(let results):
-//                    resultController.update(with: results)
-//                break
-//                case .failure(let error):
-//                    print(error.localizedDescription)
-//                }
-//            }
-//        }
-//
-//    }
-//}
+extension SearchViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let resultController = searchController.searchResultsController as? SearchResultViewController,
+            let query = searchBar.text,
+            !query.trimmingCharacters(in: .whitespaces).isEmpty else {
+            return
+        }
+        resultController.delegate = self
+        APICaller.shared.searchMovies(query: query) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let results):
+                    resultController.update(with: results.results)
+                    resultController.query = query
+                break
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
 
-//extension SearchViewController: SearchResultViewControllerDelegate{
-//    func showResult(controller: UIViewController) {
-//        navigationController?.pushViewController(controller, animated: true)
-//    }
-//}
+    }
+}
 
-////MARK: - UICollectionViewDelegate
-//extension SearchViewController: UICollectionViewDelegate {
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let genres = genre[indexPath.row]
-//        let vc = DetailCreatorViewController(creators: genres)
-//        vc.title = genres.name
-//        vc.navigationItem.largeTitleDisplayMode = .never
-//        navigationController?.pushViewController(vc, animated: true)
-//    }
-//}
+extension SearchViewController: SearchResultViewControllerDelegate{
+    func showResult(controller: UIViewController) {
+        navigationController?.pushViewController(controller, animated: true)
+    }
+}
+
+//MARK: - UICollectionViewDelegate
+extension SearchViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("DEBUG: SELECT \(indexPath)")
+    }
+}
 
 //MARK: - UICollectionViewDataSource
 extension SearchViewController: UICollectionViewDataSource {

@@ -21,7 +21,10 @@ struct UpcomingMovieViewModel {
     }
     
     var coverImage: URL? {
-        return URL(string: "https://image.tmdb.org/t/p/w500"+movie.poster_path)
+        if let posterPath = movie.poster_path {
+            return URL(string: "https://image.tmdb.org/t/p/w500"+posterPath)
+        }
+        return URL(string: "")
     }
     
     var genres: [String] {

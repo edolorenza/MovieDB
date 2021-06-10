@@ -194,16 +194,25 @@ class FeedViewController: UIViewController {
         
       
         sections.append(.listNowPlayingMovie(viewModels: nowPlaying.compactMap({
-            return MovieViewModel(coverImage: URL(string:"https://image.tmdb.org/t/p/w500"+$0.backdrop_path))
+            if let backdrop = $0.backdrop_path {
+                return MovieViewModel(coverImage: URL(string: "https://image.tmdb.org/t/p/w300"+backdrop))
+            }
+            return MovieViewModel(coverImage: URL(string: ""))
         })))
         
 
         sections.append(.listPopularMovie(viewModels: popularMovie.compactMap({
-            return MovieViewModel(coverImage: URL(string: "https://image.tmdb.org/t/p/w300"+$0.poster_path))
+            if let backdrop = $0.poster_path {
+                return MovieViewModel(coverImage: URL(string: "https://image.tmdb.org/t/p/w300"+backdrop))
+            }
+            return MovieViewModel(coverImage: URL(string: ""))
         })))
     
         sections.append(.listTopRatedMovie(viewModels: TopRatedMovie.compactMap({
-            return MovieViewModel(coverImage: URL(string: "https://image.tmdb.org/t/p/w300"+$0.poster_path))
+            if let backdrop = $0.poster_path {
+                return MovieViewModel(coverImage: URL(string: "https://image.tmdb.org/t/p/w300"+backdrop))
+            }
+            return MovieViewModel(coverImage: URL(string: ""))
         })))
     
         
