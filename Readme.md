@@ -18,7 +18,7 @@
 ## Third party list
 [SDWebImageView](https://cocoapods.org/pods/SDWebImage)<br>
 ## Screenshot
-![screenshoot](screenshot.png)
+![screenshoot](ss.png)
 ## Further Reading
 [Get API KEY](https://rawg.io/apidocs)<br>
 [GET: Now Playing Movies](https://developers.themoviedb.org/3/movies/get-now-playing)<br>
