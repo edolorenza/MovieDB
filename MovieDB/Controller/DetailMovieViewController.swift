@@ -12,6 +12,31 @@ class DetailMovieViewController: UIViewController{
     //MARK: - Properties
     
     private var movie: Movie
+    private var movieCast = [Cast]()
+    
+    private let collectionView: UICollectionView = UICollectionView(
+        frame: .zero,
+        collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { _, _ -> NSCollectionLayoutSection? in
+            let item = NSCollectionLayoutItem(
+                                layoutSize: NSCollectionLayoutSize(
+                                widthDimension: .absolute(200),
+                                heightDimension: .absolute(200)))
+            
+            item.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 4, bottom: 2, trailing: 2)
+            //group
+            let horizontalGroup = NSCollectionLayoutGroup.horizontal(
+                                  layoutSize: NSCollectionLayoutSize(
+                                  widthDimension: .fractionalWidth(0.3),
+                                  heightDimension: .absolute(200)),
+                                  subitem: item, count: 1)
+
+            //section header
+            let section = NSCollectionLayoutSection(group: horizontalGroup)
+            section.orthogonalScrollingBehavior = .continuous
+            return section
+        })
+    )
+    
     
     private let coverImage: UIImageView = {
        let iv = UIImageView()
@@ -83,6 +108,13 @@ class DetailMovieViewController: UIViewController{
         overlay.alpha = 0.5
         return overlay
     }()
+    
+    private let customView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .black
+        view.alpha = 0.5
+        return view
+    }()
 
     let scrollView: UIScrollView = {
        let v = UIScrollView()
@@ -104,10 +136,12 @@ class DetailMovieViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
       
+        setupCollectionView()
+        
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
-//        self.navigationController?.navigationBar.isTranslucent = true
-//        self.navigationController?.view.backgroundColor = .clear
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.view.backgroundColor = .clear
         self.navigationController?.navigationBar.topItem?.title = " "
         self.navigationItem.largeTitleDisplayMode = .never
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
@@ -124,6 +158,18 @@ class DetailMovieViewController: UIViewController{
         self.fetchData()
         DispatchQueue.main.async {
             self.stopLoader(loader: loader)
+        }
+        
+        APICaller.shared.getMovieCast(movie: movie) {[weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let model):
+                    self?.movieCast = model.cast
+                    self?.collectionView.reloadData()
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
         }
        
     }
@@ -220,8 +266,11 @@ class DetailMovieViewController: UIViewController{
         addToFavoriteButton.dropShadow()
         addToFavoriteButton.layer.borderWidth = 0.5
         
+        scrollView.addSubview(collectionView)
+        collectionView.frame = CGRect(x: 0, y: addToFavoriteButton.frame.maxY+10, width: view.frame.width, height: 180)
+        
         scrollView.addSubview(summary)
-        summary.anchor(top: watchTrailerButton.bottomAnchor, left: view.leftAnchor, bottom: scrollView.bottomAnchor, right: view.rightAnchor, paddingTop: 24, paddingLeft: 16, paddingRight: 16)
+        summary.anchor(top: collectionView.bottomAnchor, left: view.leftAnchor, bottom: scrollView.bottomAnchor, right: view.rightAnchor, paddingTop: 24, paddingLeft: 16, paddingRight: 16)
         
     }
     
@@ -268,6 +317,17 @@ class DetailMovieViewController: UIViewController{
         present(alert, animated: true)
     }
     
+    private func setupCollectionView(){
+       
+        collectionView.backgroundColor = .secondarySystemBackground
+        
+        collectionView.register(DetailCastMovieCollectionViewCell.self,
+                                forCellWithReuseIdentifier: DetailCastMovieCollectionViewCell.identifier)
+        
+        collectionView.delegate = self
+        collectionView.dataSource = self
+    }
+    
 }
  
 extension DetailMovieViewController{
@@ -288,4 +348,33 @@ extension DetailMovieViewController{
         }
     }
 }
+
+
+
+//MARK: - UICollectionViewDataSource, UICollectionViewDelegate
+extension DetailMovieViewController: UICollectionViewDataSource, UICollectionViewDelegate{
+  
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return movieCast.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: DetailCastMovieCollectionViewCell.identifier,
+                for: indexPath
+        ) as? DetailCastMovieCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        let cast = movieCast[indexPath.row]
+        cell.viewModel = MovieCastViewModel(cast: cast)
+        return cell
+    }
+  
+}
+
 
