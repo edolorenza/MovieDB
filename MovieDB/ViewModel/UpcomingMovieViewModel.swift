@@ -32,7 +32,9 @@ struct UpcomingMovieViewModel {
     }
     
     func convertIntToString(with genre: Movie) -> [String] {
-        let numbers = genre.genre_ids
+        guard let numbers = genre.genre_ids else {
+            return [""]
+        }
         var genresArray = [String]()
         
         for numbers in numbers {

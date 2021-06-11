@@ -9,7 +9,7 @@
 - [ ] Fetch movies genres
 - [x] Implement search bar to perform search based on title
 - [x] Showing search result movie
-- [ ] Showing detail of movie
+- [x] Showing detail of movie
 - [ ] Save the movie result as favorit movie using local data persistence
 - [ ] Show favorite movie list
 - [ ] Delete favorite movie

@@ -64,9 +64,11 @@ class SearchResultViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
-        
     }
-    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        navigationController?.navigationBar.transform = .init(translationX: 0, y: 0)
+    }
     private func setupCollectionView(){
         view.addSubview(collectionView)
         collectionView.register(UpcomingMovieCollectionViewCell.self,
@@ -125,6 +127,9 @@ extension SearchResultViewController: UICollectionViewDataSource{
 //MARK: - UICollectionViewDelegate
 extension SearchResultViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let movie = movie[indexPath.row]
+        let vc = DetailMovieViewController(movie: movie)
+        delegate?.showResult(controller: vc)
     }
 }
 

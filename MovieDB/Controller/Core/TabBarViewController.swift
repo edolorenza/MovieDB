@@ -24,23 +24,23 @@ class TabBarViewController: UITabBarController {
         vc3.title = "Library"
         
         vc1.navigationItem.largeTitleDisplayMode = .always
-        vc2.navigationItem.largeTitleDisplayMode = .always
+        vc2.navigationItem.largeTitleDisplayMode = .never
         vc3.navigationItem.largeTitleDisplayMode = .always
         
         let nav1 = UINavigationController(rootViewController: vc1)
         let nav2 = UINavigationController(rootViewController: vc2)
         let nav3 = UINavigationController(rootViewController: vc3)
         
-        nav1.navigationBar.tintColor = .label
-        nav2.navigationBar.tintColor = .label
-        nav3.navigationBar.tintColor = .label
+        nav1.navigationBar.tintColor = .systemYellow
+        nav2.navigationBar.tintColor = .systemYellow
+        nav3.navigationBar.tintColor = .systemYellow
         
         nav1.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "house"), tag: 1)
         nav2.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "magnifyingglass.circle"), tag: 1)
         nav3.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "heart"), tag: 1)
         
         nav1.navigationBar.prefersLargeTitles = true
-        nav2.navigationBar.prefersLargeTitles = true
+        nav2.navigationBar.prefersLargeTitles = false
         nav3.navigationBar.prefersLargeTitles = true
         
         setViewControllers([nav1, nav2, nav3], animated: true)

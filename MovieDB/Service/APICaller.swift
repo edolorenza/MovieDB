@@ -89,6 +89,29 @@ final class APICaller {
         }
     }
     
+    //MARK: - Search movies
+    public func getMovieDetail(movie: Movie, completion: @escaping(Result<Movie, Error>) -> Void){
+        createRequest(with: URL(string: Constants.baseAPIURL+"\(movie.id)"+"?api_key="+Constants.apiKey+"&language=en-US"), type: .GET) {
+            baseRequest in
+            print(baseRequest)
+            let task = URLSession.shared.dataTask(with: baseRequest) { data, _, error in
+                guard let data = data, error == nil else{
+                    completion(.failure(APIError.failedToGetData))
+                    return
+                }
+    
+                do{
+                    let result = try JSONDecoder().decode(Movie.self, from: data)
+                    completion(.success(result))
+                }
+                catch{
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
     
     //MARK: - Private
     enum HTTPMethod: String{

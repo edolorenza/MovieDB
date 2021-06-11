@@ -55,7 +55,6 @@ class SearchViewController: UIViewController {
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-       
         setupCollectionView()
         setupSearchController()
         fetchData()
@@ -138,7 +137,9 @@ extension SearchViewController: SearchResultViewControllerDelegate{
 //MARK: - UICollectionViewDelegate
 extension SearchViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("DEBUG: SELECT \(indexPath)")
+        let movie = upcomingMovie[indexPath.row]
+        let vc = DetailMovieViewController(movie: movie)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 
