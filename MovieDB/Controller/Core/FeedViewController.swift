@@ -32,6 +32,7 @@ class FeedViewController: UIViewController {
     private var TopRatedMovie: [Movie] = []
     
     let movieDBLogo = UIImageView(image: UIImage(named: "logo"))
+    let titleView = UIView()
     
     lazy var notificationButton: UIButton = {
         let button = UIButton(type: UIButton.ButtonType.system)
@@ -65,6 +66,10 @@ class FeedViewController: UIViewController {
         super.viewDidLayoutSubviews()
         collectionView.backgroundColor = .secondarySystemBackground
         collectionView.frame = view.bounds
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        showNavBar()
     }
  
     //MARK: - Actions
@@ -145,7 +150,6 @@ class FeedViewController: UIViewController {
     }
     
     private func setupNavBar(){
-        let titleView = UIView()
         let widht = view.frame.width
         titleView.addSubview(movieDBLogo)
         movieDBLogo.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
@@ -153,6 +157,10 @@ class FeedViewController: UIViewController {
         notificationButton.frame = CGRect(x: widht-60, y: 0, width: 40, height: 40)
         titleView.frame = .init(x: 0, y: 0, width: widht, height: 100)
         navigationItem.titleView = titleView
+    }
+    
+    private func showNavBar(){
+        navigationController?.navigationBar.transform = .init(translationX: 0, y: 0)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -195,7 +203,7 @@ class FeedViewController: UIViewController {
       
         sections.append(.listNowPlayingMovie(viewModels: nowPlaying.compactMap({
             if let backdrop = $0.backdrop_path {
-                return MovieViewModel(coverImage: URL(string: "https://image.tmdb.org/t/p/w300"+backdrop))
+                return MovieViewModel(coverImage: URL(string: "https://image.tmdb.org/t/p/w500"+backdrop))
             }
             return MovieViewModel(coverImage: URL(string: ""))
         })))
@@ -225,6 +233,24 @@ class FeedViewController: UIViewController {
 //MARK: - UICollectionViewDelegate
 extension FeedViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        let section = sections[indexPath.section]
+        switch section {
+        case .listNowPlayingMovie:
+            let movie = playingMovie[indexPath.row]
+            let vc = DetailMovieViewController(movie: movie)
+            navigationController?.pushViewController(vc, animated: true)
+
+        case .listPopularMovie:
+            let movie = popularMovie[indexPath.row]
+            let vc = DetailMovieViewController(movie: movie)
+            navigationController?.pushViewController(vc, animated: true)
+            
+        case .listTopRatedMovie:
+            let movie = TopRatedMovie[indexPath.row]
+            let vc = DetailMovieViewController(movie: movie)
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }
 
